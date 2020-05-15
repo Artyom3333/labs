@@ -29,7 +29,7 @@ public class FractalExplorer {
         JimageDisplay.add(button, BorderLayout.SOUTH);
 
         MouseHandler click = new MouseHandler();
-        display.addMouseListener( click// Операция закрытия окна по умолчанию:
+        display.addMouseListener( click);                 // Операция закрытия окна по умолчанию:
         JimageDisplay.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Данные операции правильно разметят содержимое окна, сделают его
