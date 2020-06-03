@@ -7,7 +7,7 @@ public class Main {
 
         boolean is_same = Point3d.isSamePoints(point1,point_zero);
         double distance = Point3d.distanceTo(point1, point_zero);
-
+        System.out.println(is_same);
 
 
         System.out.println(distance);

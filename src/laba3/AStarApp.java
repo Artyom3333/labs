@@ -11,7 +11,7 @@ import javax.swing.*;
  * path from start to end using the A* pathfinding algorithm.  If a path is
  * found, it is displayed in green.
  **/
-public class AStarApp {
+public class  AStarApp {
 
     /** The number of grid cells in the X direction. **/
     private int width;

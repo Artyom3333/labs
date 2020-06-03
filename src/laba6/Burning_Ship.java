@@ -1,12 +1,14 @@
-package laba4;
+package laba6;
+
 import java.awt.geom.Rectangle2D;
+
 public class Burning_Ship extends FractalGenerator {
     public String toString(){
         return "Burning_Ship";
     }
     public void getInitialRange(Rectangle2D.Double range) { // Double класс определяет диапазон (range) прямоугольника в координатах х и у
-        range.x=-2; //x
-        range.y=-2.5; //y
+        range.x=-2; //x для
+        range.y=-2.5; //y для
         range.width=4; // Ширина
         range.height=4; // Высота
     }

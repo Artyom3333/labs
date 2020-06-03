@@ -1,12 +1,15 @@
-package laba4;
+package laba6;
 
 import javax.swing.*;
-import java.awt.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.image.BufferedImage;
-import java.awt.event.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 public class FractalExplorer {
     // Поля для кнопки сохранения, кнопки сброса и коллекции для enableUI
@@ -18,57 +21,63 @@ public class FractalExplorer {
     private FractalGenerator gen;
     private Rectangle2D.Double d2;
     private int rows_remaining;
+
     public FractalExplorer(int size) {
         this.size = size;
         gen = new Burning_Ship();
         d2 = new Rectangle2D.Double();
         gen.getInitialRange(d2);
-        display=new JImageDisplay(size,size);
+        display = new JImageDisplay(size, size);
 
     }
-    public  void createAndShowGUI (){
 
+
+    public void createAndShowGUI() {
         display.setLayout(new BorderLayout());
         JFrame JimageDisplay = new JFrame("Fractal Explorer");
-        JimageDisplay.add(display,BorderLayout.CENTER);
-        JButton resetButton = new JButton("Reset");
-        ButtonHandler handler = new FractalExplorer.ButtonHandler();
-        resetButton.addActionListener(handler);
-        JimageDisplay.add(resetButton, BorderLayout.SOUTH);
+        JimageDisplay.add(display, BorderLayout.CENTER);
+        reset_Button = new JButton("Reset");
+        ButtonHandler handler = new ButtonHandler();
+        reset_Button.addActionListener(handler);
+        JimageDisplay.add(reset_Button, BorderLayout.SOUTH);
 
         MouseHandler click = new MouseHandler();
-        display.addMouseListener(click);// Операция закрытия окна по умолчанию:
-                JimageDisplay.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JComboBox ComboBox = new JComboBox();
+        display.addMouseListener(click);
+
+        // Операция закрытия окна по умолчанию:
+        JimageDisplay.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Combo_Box = new JComboBox();
         FractalGenerator mandelbrot = new Mandelbrot();
-        ComboBox.addItem(mandelbrot);
-        FractalGenerator tricorn = new FractalGenerator.Tricorn();
-        ComboBox.addItem(tricorn);
+        Combo_Box.addItem(mandelbrot);
+        FractalGenerator tricorn = new Tricorn();
+        Combo_Box.addItem(tricorn);
         FractalGenerator burning_Ship = new Burning_Ship();
-        ComboBox.addItem(burning_Ship);
+        Combo_Box.addItem(burning_Ship);
         //Создаем кнопку для выбора фрактала из коллекции
         ButtonHandler fractalChooser = new ButtonHandler();
-        ComboBox.addActionListener(fractalChooser);
+        Combo_Box.addActionListener(fractalChooser);
         JPanel DisplayPanel = new JPanel();
         JLabel myLabel = new JLabel("Fractal:");
         DisplayPanel.add(myLabel);
-        DisplayPanel.add(ComboBox);
+        DisplayPanel.add(Combo_Box);
         JimageDisplay.add(DisplayPanel, BorderLayout.NORTH);
         //Создаем кнопку для сохранения изображения фрактала
-        JButton saveButton = new JButton("Save");
+        save_Button = new JButton("Save");
         JPanel myBottomPanel = new JPanel();
-        myBottomPanel.add(saveButton);
-        myBottomPanel.add(resetButton);
+        myBottomPanel.add(save_Button);
+        myBottomPanel.add(reset_Button);
         JimageDisplay.add(myBottomPanel, BorderLayout.SOUTH);
 
         ButtonHandler saveHandler = new ButtonHandler();
-        saveButton.addActionListener(saveHandler);
+        save_Button.addActionListener(saveHandler);
 
 
         JimageDisplay.pack();
         JimageDisplay.setVisible(true);
         JimageDisplay.setResizable(false);
     }
+
+
 
     private void drawFractal() {
         // Метод для вывода на экран фрактала, должен циклически проходить через каждый пиксель в отображении (т.е. значения x и y будут меняться от 0 до размера отображения)
@@ -80,9 +89,7 @@ public class FractalExplorer {
         for (int x=0; x<size; x++) {
             FractalWorker draw = new FractalWorker(x);
             draw.execute();
-
         }
-
     }
     // Метод включает или отключает кнопки с коллекцией в пользовательском
     // интерфейсе на основе указанного параметра
@@ -91,6 +98,9 @@ public class FractalExplorer {
         reset_Button.setEnabled(val);
         save_Button.setEnabled(val);
     }
+
+
+
     // Внутренний класс для обработки событий от кнопок
     private class ButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -108,7 +118,7 @@ public class FractalExplorer {
                 gen.getInitialRange(d2);
                 drawFractal();
             }
-            // Если команда сохранить фрактал - сохранить его в формате PNG на диск
+            // Если команда сохранить фрактал - сохранить его ф ормате PNG на диск
             else if (command.equals("Save")) {
                 JFileChooser chooser = new JFileChooser();
                 // Сохранять только в формате PNG
@@ -127,7 +137,6 @@ public class FractalExplorer {
 
                     //Класс javax.imageio.ImageIO обеспечивает простые операции загрузки и сохранения изображения
                     java.io.File file = chooser.getSelectedFile();
-
                     // Попытка сохранить фрактал на диск
                     try {
                         BufferedImage displayImage = display.getImage();
@@ -143,20 +152,19 @@ public class FractalExplorer {
             }
         }
     }
+
     // Внутренний класс для обработки событий от кнопки сброса. Обработчик сбрасывает
     // диапазон к начальному, определенному генератором, а затем перерисовает фрактал
     private class ResetHandler implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
+        public void actionPerformed(ActionEvent e) {
             gen.getInitialRange(d2);
             drawFractal();
         }
     }
 
     // Внутренний класс для обработки событий с дисплея от мыши
-    private class MouseHandler extends MouseAdapter implements MouseListener {
-
+    // Внутренний класс для обработки событий с дисплея от мыши
+    private class MouseHandler extends MouseAdapter {
         @Override // Переопределим метод
         // При получении события о щелчке мышью, класс должен
         // отобразить пиксельные кооринаты щелчка в область фрактала, а затем вызвать
@@ -168,7 +176,7 @@ public class FractalExplorer {
             }
             // Получение координаты х области щелчка мыши
             int x = e.getX();
-            double xCoord = gen.getCoord(d2.x, d2.x + d2.width, size, x);
+            double xCoord =gen.getCoord(d2.x, d2.x + d2.width, size, x);
             // Получение координаты у области щелчка мыши
             int y = e.getY();
             double yCoord = gen.getCoord(d2.y, d2.y + d2.height, size, y);
